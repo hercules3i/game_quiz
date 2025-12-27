@@ -44,7 +44,7 @@ npm i --legacy-peer-deps
 Run the app in development mode:
 
 ```bash
-npm run electron:dev
+npm run serve-4201
 ```
 
 ### 3. Build for Production
