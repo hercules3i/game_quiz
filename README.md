@@ -36,7 +36,7 @@ GameCreator/
 ### 1. Install Dependencies
 
 ```bash
-npm i --force
+npm i --legacy-peer-deps
 ```
 
 ### 2. Development
