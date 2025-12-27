@@ -1,0 +1,74 @@
+<!-- <ion-item> -->
+<!-- <span class="input-label">{{'SPEAK_BOX.SELECT_IMAGE' | translate}}: </span> -->
+<!-- <ion-label class="margin-right">{{ label }}</ion-label>
+
+    <ion-button fill="clear" size="small" color="danger" class="margin-right" (click)="openModal()">
+        <ion-icon name="radio-button-on-outline" class="margin-right"></ion-icon>
+        {{ 'VOICE_RECORDER.RECORD' | translate }}
+    </ion-button>
+
+    <ion-button fill="clear" size="small" class="margin-right" (click)="audioInput.click()">
+        <ion-icon name="document-outline" class="margin-right"></ion-icon>
+        {{ 'VOICE_RECORDER.PICK_A_FILE' | translate }}
+    </ion-button> -->
+
+<input #audioInput type="file" accept="audio/*" (change)="onFileSelected($event)" style="display: none;" />
+
+<!-- <ion-label> -->
+{{ fileLabel }}
+<!-- </ion-label> -->
+<!-- </ion-item> -->
+
+<!-- <ion-modal #modal canDismiss="true"> -->
+<ng-template>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>{{'VOICE_RECORDER.RECORD' | translate}}</ion-title>
+      <ion-buttons slot="start">
+        <ion-button fill="clear" (click)="closeModal()">
+          <ion-icon name="chevron-back-outline" class="margin-right"></ion-icon>
+          {{'VOICE_RECORDER.DONE' | translate}}
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-button *ngIf="!isRecording" color="danger" (click)="startRecording()">
+          <ion-icon name="radio-button-on-outline" class="margin-right"></ion-icon>
+          {{ 'VOICE_RECORDER.START_RECORDING' | translate }}
+        </ion-button>
+
+        <ion-button *ngIf="isRecording" color="danger" (click)="stopRecording()">
+          <ion-icon name="square-outline" class="margin-right"></ion-icon>
+          <ion-label *ngIf="isLoading">
+            Loading...
+          </ion-label>
+          <ion-label *ngIf="!isLoading">
+            {{ 'VOICE_RECORDER.STOP_RECORDING' | translate }}
+          </ion-label>
+        </ion-button>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center ion-margin-top">
+        <span *ngIf="isRecording">
+          {{'VOICE_RECORDER.STATUS_RECORDING' | translate}}
+        </span>
+        <span *ngIf="!isRecording">
+          <span *ngIf="!audioData">
+            {{'VOICE_RECORDER.STATUS_EMPTY' | translate}}
+          </span>
+          <span *ngIf="audioData">
+            <ion-button fill="clear" class="margin-right" (click)="playCurrentAudioData()">
+              <ion-icon name="play-outline" class="margin-right"></ion-icon>
+              {{ 'VOICE_RECORDER.PREVIEW' | translate }}
+              {{ fileLabel }}
+            </ion-button>
+          </span>
+        </span>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+</ng-template>
+<!-- </ion-modal> -->

@@ -1,0 +1,116 @@
+<ng-template ion-modal class="custom-modal" #modal (didPresent)="didPresent()" canDismiss="true">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{'FLASHCARD.GENERATE_FLASHCARD' | translate}}</ion-title>
+        <ion-buttons slot="start">
+          <ion-button color="dark" fill="clear" title="Back" (click)="modal.dismiss()">
+            <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button color="dark" fill='clear' title="Add" (click)="drawFlashcardsToCanvas()">
+            <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-list>
+        <ion-item>
+          <ion-label>Prompt: </ion-label>
+          <ion-input [(ngModel)]="userPrompt" placeholder="5 từ về động vật" />
+        </ion-item>
+      </ion-list>
+
+      <ion-grid>
+        <ion-row class="ion-justify-content-end">
+          <ion-button *ngIf="flashcards.length > 0" fill="clear" (click)="generateAllFlashcardsData()">{{
+            'FLASHCARD.GENERATE_ALL' | translate }}</ion-button>
+
+          <ion-button color="success" fill="outline" (click)="generateCompletion()"
+            [disabled]="userPrompt.length === 0">{{ 'FLASHCARD.GENERATE' | translate }}</ion-button>
+        </ion-row>
+      </ion-grid>
+
+      <p *ngIf="isLoading">Loading...</p>
+      <ion-list>
+        <ion-item *ngFor="let flashcard of flashcards; index as flashcardIndex">
+          <ion-label class="flashcard-content">
+            <h1>{{ flashcard.word }}</h1>
+            <p>
+              <i>{{'FLASHCARD.SPELLING' | translate}}</i>:
+              <input type="text" [(ngModel)]="flashcard.spelling" />
+            </p>
+            <p>
+              <i>{{'FLASHCARD.PART_OF_SPEECH' | translate}}</i>:
+              <input type="text" [(ngModel)]="flashcard.partOfSpeech" />
+            </p>
+            <p>
+              <i>{{'FLASHCARD.EXAMPLE' | translate}} 1:</i>:
+              <input type="text" [(ngModel)]="flashcard.examples[0]" />
+            </p>
+            <p>
+              <i>{{'FLASHCARD.EXAMPLE' | translate}} 2:</i>:
+              <input type="text" [(ngModel)]="flashcard.examples[1]" />
+            </p>
+
+            <ion-grid>
+              <ion-row class="ion-justify-content-end">
+                <ion-col>
+                  <div *ngIf="flashcard.imageData; then imageShow else imageControl"></div>
+                  <ng-template #imageControl>
+                    <ion-button expand="block" fill="clear" (click)="generateFlashcardImage(flashcardIndex)">
+                      <ion-icon name="sparkles-outline"></ion-icon>
+
+                      <span *ngIf="!flashcard.isGeneratingImage">Generate Image</span>
+                      <span *ngIf="flashcard.isGeneratingImage">Loading...</span>
+                    </ion-button><br />
+
+                    <ion-button expand="block" fill="clear" (click)="pickImage(flashcardIndex)">
+                      <ion-icon name="image-outline"></ion-icon>
+                      Upload Image
+                    </ion-button>
+                  </ng-template>
+                  <ng-template #imageShow>
+                    <img [src]='flashcard.imageData' class="img" />
+                  </ng-template>
+                </ion-col>
+
+                <ion-col>
+                  <div *ngIf="flashcard.audioData1; then audioShow else audioControl"></div>
+                  <ng-template #audioControl>
+                    <ion-button expand="block" fill="clear" (click)="generateFlashcardAudio(flashcardIndex)">
+                      <ion-icon name="sparkles-outline"></ion-icon>
+                      <span *ngIf="!flashcard.isGeneratingAudio">Generate Audio</span>
+                      <span *ngIf="flashcard.isGeneratingAudio">Loading...</span>
+                    </ion-button><br />
+                  </ng-template>
+                  <ng-template #audioShow>
+                    <audio controls>
+                      <source [src]="flashcard.audioData1">
+                    </audio>
+                  </ng-template>
+
+                  <input-audio label="{{'FLASHCARD.SELECT_AUDIO' | translate}}:"
+                    (onChange)="updateAudioData(flashcardIndex, $event)" />
+                </ion-col>
+
+                <ion-col size="auto">
+                  <ion-button fill="clear" color="danger" (click)="resetFlashcardData(flashcardIndex)">
+                    <ion-icon name="remove-circle-outline" slot="icon-only" title="Clear"></ion-icon>
+                  </ion-button>
+
+                  <ion-button fill="clear" color="danger" (click)="deleteFlashcard(flashcardIndex)">
+                    <ion-icon name="trash-bin-outline" slot="icon-only" title="Delete"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ng-template>

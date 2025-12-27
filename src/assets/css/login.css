@@ -1,0 +1,64 @@
+.login-form .txtsignin1 {
+    background: #ffffff !important;
+    border: 1px solid #f2f2f2 !important;
+    border-radius: 8px !important;
+    width: 90%;
+    margin-left: 5%;
+    height: 0px;
+}
+
+.login-form .txtsignin2 {
+    background: #FFFFFF !important;
+    margin-top: 8px;
+    border: 1px solid #f2f2f2 !important;
+    border-radius: 8px !important;
+    width: 90%;
+    margin-left: 5%;
+    height: 0px;
+}
+.login-form .txtsignin3 {
+    background: #FFFFFF !important;
+    /* opacity: 0.7 !important; */
+    margin-top: 8px;
+    border: 1px solid !important;
+    border-radius: 8px !important;
+    width: 50%;
+    margin-left: 25%;
+}
+.login-form .list-md {
+    border: 0px solid !important;
+    border-radius: 0px !important;
+    margin-left: 25px !important;
+    margin-right: 25px !important;
+}
+
+.login-form .input-cover {
+    border: 0px solid !important;
+}
+
+.login-form .input-md {
+    border-left: 0px solid !important;
+}
+
+.login-form .txtsignin .lblpass {
+    margin-left: 2px !important;
+}
+
+
+
+
+/*.col {
+    position: relative;
+    padding: 5px;
+    width: 100%;
+    margin: 0;
+    min-height: 1px;
+    -webkit-flex-basis: 0;
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    margin-top: 45% !important;
+}*/

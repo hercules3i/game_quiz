@@ -1,0 +1,36 @@
+ion-icon {
+    margin-right: .4rem;
+}
+
+audio {
+    max-width: 40vw;
+}
+
+.flashcard-content {
+    p {
+        font-size: medium !important;
+        display: flex;
+        align-items: center;
+        gap: .4rem;
+
+        input {
+            display: inline-block;
+            width: 100%;
+            color: black;
+            border: none;
+            border-bottom: 1px solid #00000016;
+            padding: .4rem .7rem;
+            transition: border-color 150ms;
+
+            &:focus {
+                outline: none;
+                border-bottom: 1px solid #ff907f;
+            }
+        }
+    }
+
+    .img {
+        display: block;
+        min-width: 64px;
+    }
+}

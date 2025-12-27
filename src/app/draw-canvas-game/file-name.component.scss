@@ -1,0 +1,121 @@
+.custom-modal {
+  --height: 100%;
+  // --border-radius: 24px 24px 0 0;
+}
+.custom-modal::part(content) {
+  position: fixed;
+  bottom: 0;
+}
+
+.conten_gird {
+  width: 96%;
+  overflow: scroll;
+  margin-bottom: 5px;
+  margin: 2%;
+  border: 1px solid #f2f2f2;
+  float: left;
+}
+.noidung {
+  background: #ffffff;
+  min-height: 40px;
+  // font-size: 14px;
+  text-align: center;
+}
+.wp_code {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  float: left;
+  min-height: 40px;
+  // font-size: 12px;
+  overflow: auto;
+  text-align: inherit;
+  border: 1px solid #f3f3f3;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: aliceblue;
+}
+.wp_code1 {
+  padding-top: 10px;
+  float: left;
+  // height: 40px;
+  // font-size: 12px;
+  overflow: auto;
+  text-align: inherit;
+  border: 1px solid #f3f3f3;
+  padding-left: 5px;
+}
+.wp_codeHeader {
+  font-weight: bold;
+  text-decoration: underline;
+}
+.wp_code_center {
+  padding: 5px;
+  padding-top: 10px;
+  float: left;
+  min-height: 50px;
+  overflow: auto;
+  text-align: center;
+  border: 1px solid #f3f3f3;
+}
+.delete_file {
+  float: left;
+  height: 50px;
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+.imgdelete_File {
+  width: 18px;
+  height: 20px;
+  float: right;
+  margin-top: 3px;
+}
+
+.grid-row-file {
+  display: grid;
+  grid-template-columns: auto 75px;
+}
+.viewHeadSearch {
+  width: 45%;
+  margin-left: 3.5%;
+  float: left;
+}
+.HeaderGeneral {
+  height: 30px;
+  padding-left: 15px;
+  width: 100%;
+  border: 1px solid #d2d2d2;
+  border-radius: 8px;
+  // font-size: var(--support-font-size);
+  background: white;
+  --border-radius: 8px;
+  --min-height: 28px;
+}
+.viewLable {
+  // font-weight: 300 !important;
+  margin-bottom: 10px;
+}
+.mapping {
+  font-size: 85%;
+  color: #010b79;
+  font-weight: bold;
+}
+
+.width93 {
+  width: 93% !important;
+}
+.cssProcess {
+  // font-size: 75%;
+  color: blue;
+  text-align: right;
+  margin-top: 6px;
+  width: 100%;
+  float: right;
+}
+.viewBtnTabSave {
+  width: 15%;
+  float: right;
+  text-align: center;
+  padding-top: 15px;
+  margin-right: 8px;
+}

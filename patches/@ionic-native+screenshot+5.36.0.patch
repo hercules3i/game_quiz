@@ -1,0 +1,25 @@
+diff --git a/node_modules/@ionic-native/screenshot/index.js b/node_modules/@ionic-native/screenshot/index.js
+index 62c66ca..e04377b 100644
+--- a/node_modules/@ionic-native/screenshot/index.js
++++ b/node_modules/@ionic-native/screenshot/index.js
+@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
+         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+     };
+ })();
+-import { IonicNativePlugin, Plugin, getPromise } from '@ionic-native/core';
++import { IonicNativePlugin, getPromise } from '@ionic-native/core';
+ var ScreenshotOriginal = /** @class */ (function (_super) {
+     __extends(ScreenshotOriginal, _super);
+     function ScreenshotOriginal() {
+diff --git a/node_modules/@ionic-native/screenshot/ngx/index.js b/node_modules/@ionic-native/screenshot/ngx/index.js
+index a1e904a..728dac9 100644
+--- a/node_modules/@ionic-native/screenshot/ngx/index.js
++++ b/node_modules/@ionic-native/screenshot/ngx/index.js
+@@ -1,6 +1,6 @@
+ import { __extends } from "tslib";
+ import { Injectable } from '@angular/core';
+-import { IonicNativePlugin, Plugin, getPromise } from '@ionic-native/core';
++import { IonicNativePlugin, getPromise } from '@ionic-native/core';
+ var Screenshot = /** @class */ (function (_super) {
+     __extends(Screenshot, _super);
+     function Screenshot() {

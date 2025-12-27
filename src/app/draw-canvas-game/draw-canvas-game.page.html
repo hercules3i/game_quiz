@@ -1,0 +1,1787 @@
+<div #canvasContainer id="drawing-canvas-container"
+  style="width: 100%; float: left; position: relative; margin-top: var(--ion-safe-area-top, 0);">
+  <div [class.hide]="showMenuQuiz" class="on-do-quiz-btns">
+    <ion-button id="exit" color="dark" fill="solid" class="btn" (click)="ExitQuizDoMode()">
+      <ion-icon name="close-outline" slot="icon-only" size="large"></ion-icon>
+    </ion-button>
+
+    <ion-button id="exit" color="dark" fill="solid" class="btn" (click)="checkResult()">
+      <ion-icon name="checkmark-done-outline" slot="icon-only" size="large"></ion-icon>
+    </ion-button>
+  </div>
+
+  <canvas id="drawingCanvas" width="375" height="400" #myCanvas></canvas>
+  <div [class.hide]="!showMenuQuiz" class="top-left-canvas">
+    <div class="area">
+      <button id="zoomIn" class="icon-Header icon-Header22" (click)="zoomInGame()">
+        <img height="20px" src="assets/icon/ZoomOut.png" class="img35" />
+      </button>
+
+      <button id="zoomOut" class="icon-Header" (click)="zoomOutGame()">
+        <img height="20px" src="assets/icon/ZoomIn.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" id="quiz-1" (click)="selectOption('quiz-1')"
+        [class.active1]="selectedOption1 === 'quiz-1'">
+        <img src="assets/icon-/card-game.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" id="quiz-2" (click)="selectOption('quiz-2')"
+        [class.active1]="selectedOption1 === 'quiz-2'">
+        <img src="assets/icon-/scrabble.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" id="quiz-3" (click)="selectOption('quiz-3')"
+        [class.active1]="selectedOption1 === 'quiz-3'">
+        <img src="assets/icon-/jigsaw.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" id="quiz-4" (click)="selectOption('quiz-4')"
+        [class.active1]="selectedOption1 === 'quiz-4'">
+        <img src="assets/icon/quiz-connect-line.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" id="quiz-11" (click)="selectOption('quiz-11')"
+        [class.active1]="selectedOption1 === 'quiz-11'">
+        <img src="assets/icon-/answer.png" class="img35" />
+      </button>
+
+      <button *ngIf="!currentActiveFlashcard" class="icon-Header" (click)="this.createFlashcardModal.openModal()">
+        <img src="assets/icon-/flashcard.png" class="img35" />
+      </button>
+
+      <button *ngIf="currentActiveFlashcard" class="icon-Header active1"
+        (click)="this.createFlashcardModal.openModalEditing(currentActiveFlashcard)">
+        <img src="assets/icon-/flashcard.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" (click)="this.generateFlashcardModal.openModal()">
+        <img src="assets/icon-/ai-generate.png" class="img35" />
+      </button>
+
+      <!-- <select #selectedOrientationValue id="fileTypeSelector" (change)="selectOrientation(selectedOrientationValue.value)"
+        style="border-radius: 0.375rem; height: 15px; width: 20px; align-items: center; margin-top: 5px;">
+        <option value="" selected></option>
+        <option value="horizontal" style="font-size: 10px;">horizontal</option>
+        <option value="vertical" style="font-size: 10px;">vertical</option>
+      </select> -->
+      <button class="icon-Header" id="quiz-11" id="fileTypeSelector" (click)="selectOrientation('horizontal')"
+        [class.active1]="selectedOrientationDisplay === 'horizontal' ">
+        <!-- <span class="icon-Header_text">H</span> -->
+        <img class="iconH_V img35" src="assets/icon-/Text_H.png" />
+      </button>
+
+      <button class="icon-Header" id="quiz-11" id="fileTypeSelector" (click)="selectOrientation('vertical')"
+        [class.active1]="selectedOrientationDisplay === 'vertical' ">
+        <!-- <span class="icon-Header_text">V</span> -->
+        <img class="iconH_V img35" src="assets/icon-/Text_V.png" />
+      </button>
+
+      <!-- Game -->
+      <!-- <button class="icon-Header" id="quiz-11" (click)="iconGame('quiz-game')" data-name="Game"
+        [class.active1]="selectedOption1 === 'quiz-game'">
+        <img src="assets/icon-/joystick.png" class="img35" />
+      </button> -->
+
+      <button class="icon-Header" (click)="selectAnswerQuiz('selectAnswerQuiz')"
+        [class.active1]="selectedAnswerQuiz === 'selectAnswerQuiz'">
+        <img src="assets/icon-/000.png" class="img35" />
+      </button>
+
+      <button class="icon-Header" (click)="doQuiz($event)">
+        <img src="assets/icon-/doQuiz.png" class="img35" />
+      </button>
+
+      <div *ngIf="hiddenQuiz3" class="menu-Popup-Header-Quiz-MatchObject">
+        <!-- <button class="icon-Header icon-Header-Iphone12Pox" [class.hide]="!showTextMode6"
+          (click)="addConnection('addConnect')" [class.active1]="addConnected === 'addConnect'">
+          <img class="icon-Connectivity" src="assets/icon-/connectivity.png" />
+        </button> -->
+        <button class="icon-Header icon-Connect-Responsive" (click)="changeImageSelectValue('Vessel')"
+          [class.active1]="matchOption === 'Vessel'">
+          Vessel
+        </button>
+        <button class="icon-Header icon-Connect-Responsive" (click)="changeImageSelectValue('Answer')"
+          [class.active1]="matchOption === 'Answer'">
+          Answer
+        </button>
+        <button class="icon-Header icon-Connect-Responsive" (click)="removeConnection('Delete')"
+          [class.active1]="matchOption === 'Delete'">
+          Delete
+        </button>
+      </div>
+
+      <div *ngIf="hiddenQuiz4" class="menu-Popup-Header-Quiz-MatchObject">
+        <button class="icon-Header icon-Connect-Responsive" style="width: 100%;" (click)="ConnectLine()"
+          [class.active1]="matchOption === 'Line'">
+          Connect Line
+        </button>
+      </div>
+
+      <button class="icon-Header" [class.hide]="!showTextMode2" (click)="inputObject()">
+        <img src="assets/icon-/add_input.png" class="img35" />
+      </button>
+      <div *ngIf="hiddenQuiz011" class="menu-Popup-Header-Quiz-MultiChoose">
+        <!-- <span class="menu-Popup-Header-Quiz-MultiChoose-Text">Anwser</span> -->
+        <button class="icon-Header multiTrue" (click)="changeAnswerSelectValue('True')"
+          [ngClass]="{'button-clicked': multiOption === 'True'}" [class.active1]="multiOption === 'True'">
+          True
+        </button>
+        <button class="icon-Header multiFalse" (click)="changeAnswerSelectValue('False')"
+          [ngClass]="{'button-clicked': multiOption === 'False'}" [class.active1]="multiOption === 'False'">
+          False
+        </button>
+      </div>
+
+      <button id="hibernate" class="btnLeft" style="margin-right: 10px" (click)="hibernate()"
+        *ngIf="test && isBrowser && !drawingCanvas?.isHibernate">
+        Ngủ
+      </button>
+      <button id="hibernate" class="btnLeft" style="margin-right: 10px" (click)="wake()"
+        *ngIf="test && isBrowser && drawingCanvas?.isHibernate">
+        Tỉnh
+      </button>
+    </div>
+
+    <div class="area">
+      <button id="moveObject" class="icon-Header" (click)="toggleMoveObject()"
+        [ngClass]="{'sunken': getActiveObject(), 'disabled-element': !isCurrentlyDrawing()}">
+        <img class="icon-Header-Right0" src="assets/icon/Mouse.png" />
+      </button>
+
+      <button id="pen" class="icon-Header" (click)="drawing()" [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+        <img class="icon-Header-Right0" src="assets/icon/Design.png" />
+      </button>
+
+      <button id="pen" class="icon-Header" [ngClass]="{'disabled-element': !isCurrentlyDrawing()}"
+        (click)="popupAttribute()">
+        <img class="icon-Header-Right0" src="assets/icon/Properties.png" />
+      </button>
+
+      <button id="save" class="icon-Header" (click)="updateJsonCanvas($event)" *ngIf="gameMode === 'constraint'"
+        [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+        <img class="icon-Header-Right0" src="assets/icon/Save.png" />
+      </button>
+      <button id="save" class="icon-Header" (click)="saveJsonToLocal($event)" *ngIf="gameMode === 'free'"
+        [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+        <img class="icon-Header-Right0" src="assets/icon/Save.png" />
+      </button>
+
+      <button id="exit" class="icon-Header" (click)="backPage()">
+        <img class="icon-Header-Right0" src="assets/icon/Close.png" />
+      </button>
+
+      <button id="exit" class="icon-Header" (click)="checkClose=!checkClose">
+        <img class="image-Show-Header-Right" *ngIf="checkClose === true" src="assets/icon-/right-arrow.png" />
+        <img class="image-Show-Header-Right" *ngIf="checkClose === false" src="assets/icon-/left-arrow.png" />
+      </button>
+
+      <!-- <button id="exportChannel" class="btnLeft" style="margin-right: 10px" (click)="exportImageChannel()"
+          *ngIf="channelExport">
+          <img height="20px" src="assets/icon/Mouse.png" style="height: 18px; margin-top: 3px;">
+        </button>
+
+        <button id="export" class="btnLeft" style="margin-right: 10px" (click)="exportImage()" *ngIf="!isHiddenExport">
+          <img height="20px" src="assets/icon/Image_Copy.png" style="height: 18px; margin-top: 3px;">
+        </button>
+
+        <button class="btnLeft" style=" margin-right: 10px" (click)="switchToolAction('group')">
+          <img height="20px" src="assets/icon-/group01.png" style="height: 18px; margin-top: 3px;" />
+        </button>
+
+        <button class="btnLeft" style="margin-right: 10px;" (click)="switchToolAction('unGroup')">
+          <img height="20px" src="assets/icon-/ungroup.png" style="height: 18px; margin-top: 3px;" />
+        </button>
+
+        <button class="btnLeft" style="margin-right: 10px;" (click)="switchToolAction('connect')">
+          <img height="20px" src="assets/icon-/cover.png" style="height: 18px; margin-top: 3px;" />
+        </button>
+
+        <button class="btnLeft" style="margin-right: 10px;" (click)="switchToolAction('unConnect')">
+          <img height="20px" src="assets/icon-/cover.png" style="height: 18px; margin-top: 3px;" />
+        </button>
+
+        <button id="pasteObjects" class="btnLeft" style="margin-right: 10px" (click)="copyObjectQuiz()"
+          [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+          <img height="20px" src="assets/icon/Image_Copy.png" style="height: 18px; margin-top: 3px;">
+        </button>
+
+        <button id="pasteObjects" class="btnLeft" style="margin-right: 10px" (click)="pasteObjectQuiz()"
+          [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+          <img height="20px" src="assets/icon/Image_Paste.png" style="height: 18px; margin-top: 3px;">
+        </button>
+
+        <button id="erase" class="btnLeft" style="margin-right: 10px" (click)="switchToolAction('erase')"
+          [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+          <img height="20px" src="assets/icon/Delete.png" style="height: 18px; margin-top: 3px;">
+        </button>
+
+          <button id="pen" class="btnLeft" style="margin-right: 10px" (click)="showMenuAttribute()">
+          <div class="color-white fs20">M</div>
+        </button>
+
+        <button id="save-local" class="btnLeft" style="margin-right: 10px" (click)="saveJsonToLocal($event)"
+          [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+          <img height="20px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Nl5g46QHoDfkV6lENcES8SJPyJ1yhfofJXgpwNbrsxzuywjN&s" style="height: 18px; margin-top: 3px;">
+        </button> -->
+    </div>
+  </div>
+
+  <div id="divrubber" #divRubber style="
+      z-index: 10;
+      display: block;
+      top: 100px;
+      left: 100px;
+      width: 30px;
+      height: 30px;
+    " [hidden]="!canErasing" title="drag to erase with checkbox signed" alt="drag to erase with checkbox signed"
+    class="ui-draggable ui-draggable-handle">
+    <div id="controlrubber" class="css-img-erase css-cursor-50"></div>
+  </div>
+
+  <file-name-modal #fileNameModal (onFinishUpdating)="updateFileName($event)"></file-name-modal>
+</div>
+
+<!-- Popup menu quiz 1 -->
+<ion-fab class="menuPopupQuiz" vertical="top" horizontal="mid" slot="fixed">
+  <div class="fab-container menu-Popup-Quiz1-Div" *ngIf="hiddenQuiz1">
+    <img class="menu-Popup-Header-Quiz-icon-Close" src="assets/icon/Close.png" (click)="CloseMenuPopupQuiz()" />
+    <span class="fab-label menu-Popup-Quiz-Title">Ô chữ</span>
+    <button class="menu-Popup-Quiz1-Button-Out" [ngClass]="{'active': isActiveQuiz}" (click)="isActiveQuiz = true"
+      [class.hide]="!showTextMode03" id="textMode03">
+      <textarea class="menu-Popup-Header-Quiz1-Input" id="textAreaSelectQuiz" placeholder="Nhập text"></textarea>
+      <button class="menu-Popup-Header-Quiz1-Button" [class.hide]="!showTextMode03" (click)="addTextSelectQuiz()">
+        Add
+      </button>
+    </button>
+  </div>
+</ion-fab>
+
+<!-- Popup menu quiz 2 -->
+<ion-fab class="menuPopupQuiz2" vertical="top" horizontal="mid" slot="fixed">
+  <div class="fab-container menu-Popup-Quiz2-Div" *ngIf="hiddenQuiz2">
+    <img class="menu-Popup-Header-Quiz-icon-Close" src="assets/icon/Close.png" (click)="CloseMenuPopupQuiz()" />
+    <span class="fab-label menu-Popup-Quiz-Title">Điền từ</span>
+    <button [class.hide]="!showTextMode2" id="textMode03" class="menu-Popup-Quiz1-Button-Out"
+      [ngClass]="{'active': isActiveQuiz}" (click)="isActiveQuiz = true">
+      <textarea id="textAreaInputQuiz2" placeholder="Nhập text input" class="menu-Popup-Header-Quiz1-Input"></textarea>
+      <button class="menu-Popup-Header-Quiz1-Button" [class.hide]="!showTextMode2" (click)="addTextAreaInputQuiz2()">
+        Add
+      </button>
+    </button>
+  </div>
+</ion-fab>
+
+<!-- Popup menu quiz 3 -->
+<ion-fab vertical="top" horizontal="mid" slot="fixed" class="menuPopupQuiz3" id="quiz3">
+  <div *ngIf="hiddenQuiz3">
+    <div class="fab-container">
+      <img class="menu-Popup-Header-Quiz-icon-Close" src="assets/icon/Close.png" (click)="CloseMenuPopupQuiz()" />
+      <span style="font-size: 12px" class="fab-label">Ghép đôi</span>
+      <div [class.hide]="!showTextMode6" class="icon-layer" style="margin-right: 10px; margin-top: 3px">
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          ">
+          <select [value]="matchObjectType" id="image-value" #ImageValue
+            (change)="changeImageSelectValue(ImageValue.value)" style="padding: 3px 0; border-radius: 5px">
+            <option value="No Choose">No Choose</option>
+            <option value="Vessel">Vessel</option>
+            <option value="Answer">Answer</option>
+          </select>
+          <button class="icon-Header icon-Connect-Responsive" (click)="removeConnection('Delete')" id="deleteHidden"
+            [class.active1]="matchOption === 'Delete'">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-fab>
+
+<!-- Popup menu quiz 11 -->
+<ion-fab vertical="top" horizontal="mid" slot="fixed" class="menuPopupQuiz11">
+  <div *ngIf="hiddenQuiz11" class="fab-container menu-Popup-Quiz1-Div">
+    <img class="menu-Popup-Header-Quiz-icon-Close" src="assets/icon/Close.png" (click)="CloseMenuPopupQuiz()" />
+    <span class="fab-label menu-Popup-Quiz-Title">Nhập nội dung ký tự</span>
+    <button class="menu-Popup-Header-Quiz11-Button-Out" id="textMode02" data-name="Text" [class.hide]="!showQuiz11"
+      [ngClass]="{'active': isActiveQuiz}" (click)="isActiveQuiz = true">
+      <textarea class="menu-Popup-Header-Quiz11-Button-Out-Input" id="textInput" placeholder="Nhập vào"></textarea>
+      <button type="button" class="menu-Popup-Header-Quiz11-Button-Out-ButtonChild" (click)="addText2($event)">
+        Add
+      </button>
+    </button>
+  </div>
+</ion-fab>
+
+<!-- Game by Viet 30/12/2023 -->
+<ion-fab vertical="top" horizontal="mid" slot="fixed" class="menuGame">
+  <div *ngIf="hiddenGame">
+    <div class="fab-container" style="height: 120px">
+      <img class="menu-Popup-Header-Quiz-icon-Close" src="assets/icon/Close.png" (click)="CloseMenuPopupQuiz()" />
+      <span class="fab-label">Form Setting Game</span>
+      <div class="fab-container_quizGame">
+        <button class="button-Icon-Header-Right" id="normal-addimage" data-name="Image">
+          <label style="background-color: #323130; border-color: #323130" for="imageModeGame">
+            <img src="assets/icon-/Image.png" class="img25" />
+          </label>
+          <input id="imageModeGame" class="form-control inputfile input-sm" name="input-image" [hidden]="true" multiple
+            type="file" accept="image/*" />
+        </button>
+        <button class="button-Icon-Header-Right" id="normal-addimage" data-name="Audio">
+          <label style="background-color: #323130; border-color: #323130" for="imageModeGameAudio">
+            <img src="assets/icon-/volume.png" class="img25" />
+          </label>
+          <input id="imageModeGameAudio" class="form-control inputfile input-sm" name="input-image" [hidden]="true"
+            multiple type="file" accept="audio/*" />
+        </button>
+        <select #selectObjectProperties id="fileTypeSelector" style="
+            border-radius: 0.375rem;
+            height: auto;
+            width: auto;
+            padding-top: 5px;
+            align-items: center;
+          ">
+          <option value="null">Chọn số</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+        </select>
+      </div>
+      <div>
+        <button class="button-Icon-Header-Right" id="normal-addimage" data-name="Collision">
+          <label style="background-color: #323130; border-color: #323130" for="imageModeGameCollision">
+            <img src="assets/icon-/collision.png" class="img25" />
+          </label>
+          <input id="imageModeGameCollision" class="form-control inputfile input-sm" name="input-image" [hidden]="true"
+            multiple type="file" accept="image/*" />
+        </button>
+        <input id="textNumber" placeholder="Số ảnh" style="width: 100px; padding: 5px; border-radius: 0.375rem"
+          type="number" />
+        <button type="button" class="menu-Popup-Header-Quiz1-Button"
+          style="border-radius: 0.375rem; width: auto; height: auto">
+          Thêm
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-fab>
+
+<!--  -->
+<div *ngIf="checkClose" class="right-left-canvas">
+  <!-- b1 Header Right-->
+  <button (click)="checkB01=!checkB01" class="Icon-Big-Popup-Header-Right">
+    <img *ngIf="checkB01 === false" src="assets/icon-/arrow_right.png" />
+    <img *ngIf="checkB01 === true" src="assets/icon-/arrow_down.png" />
+  </button>
+
+  <div *ngIf="checkB01">
+    <button id="zoomInHidden" class="button-Icon-Header-Right" (click)="zoomInGame()">
+      <img height="20px" src="assets/icon/ZoomOut.png" />
+    </button>
+    <button id="zoomOutHidden" class="button-Icon-Header-Right" (click)="zoomOutGame()">
+      <img height="20px" src="assets/icon/ZoomIn.png" />
+    </button>
+
+    <button id="moveObject_Hidden" class="button-Icon-Header-Right" (click)="toggleMoveObject()"
+      [ngClass]="{'sunken': getActiveObject(), 'disabled-element': !isCurrentlyDrawing()}">
+      <img class="icon-Header-Right0" src="assets/icon/Mouse.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" id="pasteObjects" (click)="copyObjectQuiz()"
+      [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+      <img src="assets/icon/Image_Copy.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" id="pasteObjects" (click)="pasteObjectQuiz()"
+      [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+      <img src="assets/icon/Image_Paste.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" id="erase" (click)="switchToolAction('erase')"
+      [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+      <img src="assets/icon/Delete.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" (click)="switchToolAction('group')">
+      <img src="assets/icon-/Groups.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" (click)="switchToolAction('unGroup')">
+      <img src="assets/icon-/UnGroups.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" (click)="switchToolAction('connect')">
+      <img src="assets/icon-/Connections.png" />
+    </button>
+
+    <button class="button-Icon-Header-Right" (click)="switchToolAction('unConnect')">
+      <img src="assets/icon-/UnConnections.png" />
+    </button>
+  </div>
+
+  <!-- B2 Header Right-->
+  <button (click)="checkB02=!checkB02" class="Icon-Big-Popup-Header-Right">
+    <img *ngIf="checkB02 === false" src="assets/icon-/arrow_right.png" />
+    <img *ngIf="checkB02 === true" src="assets/icon-/arrow_down.png" />
+  </button>
+
+  <div *ngIf="checkB02">
+    <button style="color: #ffff" class="button-Icon-Header-Right" id="pen" (click)="resetQuiz()">
+      R
+    </button>
+    <button class="button-Icon-Header-Right">
+      <label for="backgroundMode">
+        <img src="assets/icon-/back_ground.png" class="img25" />
+      </label>
+      <input id="backgroundMode" class="form-control inputfile input-sm" name="input-json" [hidden]="true"
+        (change)="loadBackGround($event)" type="file" />
+    </button>
+
+    <button class="button-Icon-Header-Right" id="textMode" (click)="addText()" data-name="Text">
+      <img src="assets/icon-/Text.png" class="img25" />
+    </button>
+
+    <button class="button-Icon-Header-Right" id="normal-addimage" data-name="Image">
+      <label for="imageMode" class="header-Right-B2-Icon-LoadImage">
+        <img src="assets/icon-/Image.png" class="img25" for="imageMode" />
+      </label>
+      <input id="imageMode" class="form-control inputfile input-sm" name="input-image" [hidden]="true"
+        (change)="normalAddimage($event)" multiple type="file" />
+    </button>
+    <button class="button-Icon-Header-Right" id="normal-addAudio" data-name="Audio">
+      <label for="audioMode2" class="header-Right-B2-Icon-LoadImage">
+        <img src="assets/icon/icon-audio-white.png" class="img25" for="audioMode2" style="width: unset;" />
+      </label>
+      <input id="audioMode2" class="form-control inputfile input-sm" name="input-image" [hidden]="true"
+        (change)="normalAddAudio($event)" multiple type="file" />
+    </button>
+
+    <button class="button-Icon-Header-Right" id="normal-addAudio2" (click)="addMic()">
+      <label for="audioMode3" class="header-Right-B2-Icon-LoadImage">
+        <img src="assets/icon/icon-mic-white.png" class="img25" for="audioMode3" style="width: unset;" />
+      </label>
+    </button>
+    <button class="button-Icon-Header-Right">
+      <label for="jsonMode">
+        <img src="assets/icon-/Image_Upload_File.png" class="img25" />
+      </label>
+      <input id="jsonMode" class="form-control inputfile input-sm" name="input-json" [hidden]="true"
+        (change)="loadJson($event)" type="file" />
+    </button>
+    <button id="saveJson" class="button-Icon-Header-Right" (click)="updateJsonCanvas($event)"
+      [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+      <img class="icon-Header-Right0" src="assets/icon/Save.png" />
+    </button>
+    <button id="save_localJson" class="button-Icon-Header-Right" (click)="saveJsonToLocal($event)"
+      [ngClass]="{'disabled-element': !isCurrentlyDrawing()}">
+      <img src="assets/icon-/iconSave_local.png" class="" />
+    </button>
+    <!-- <button class="button-Icon-Header-Right">
+    </button>
+    <button class="button-Icon-Header-Right">
+    </button> -->
+
+  </div>
+</div>
+
+<!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="toggleB1()"
+    style="width: 50px; height: 50px; margin-bottom: 25px;">
+    <i class="fa-solid fa-chevron-down color-dark" *ngIf="checkB1"></i>
+    <i class="fa-solid fa-chevron-up color-dark" *ngIf="!checkB1"></i>
+  </ion-fab-button>
+  <ion-fab-button (click)="toggleB2()" style=" width: 50px; height: 50px; margin-bottom: 25px;">
+    <i class="fa-solid fa-chevron-down color-dark" *ngIf="checkB2"></i>
+    <i class="fa-solid fa-chevron-up color-dark" *ngIf="!checkB2"></i>
+  </ion-fab-button>
+</ion-fab> -->
+
+<ion-modal class="custom-modal" #modal trigger="open-modal" canDismiss="true" [presentingElement]="presentingElement">
+  <ng-template>
+    <ion-content style="background: #323130">
+      <ion-buttons style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          background: #323130;
+        ">
+        <div style="
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+          ">
+          <ion-button style="background-color: #323130; border-color: #323130" color="white" class="cssBtnBack"
+            (click)="modal.dismiss()">
+            <i class="fa-solid fa-xmark color-white fs30"></i>
+          </ion-button>
+        </div>
+
+        <div style="width: 95%">
+          <div (click)="showLayer=!showLayer" style="
+              display: flex;
+              align-items: center;
+              justify-content: left;
+              margin-left: 50px;
+              width: 15%;
+            ">
+            <img *ngIf="showLayer === false" src="assets/icon-/arrowRight.png" class="img25 icon-image" />
+            <img *ngIf="showLayer === true" src="assets/icon-/arrowDown.png" class="img25 icon-image" />
+            <h2 style="margin: 0; color: #ffff; font-size: 20px">Layer</h2>
+          </div>
+
+          <div *ngIf="showLayer" style="margin-left: 75px">
+            <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+              data-name="Layer">
+              <img src="assets/icon-/Layer.png" class="img25" />
+            </ion-button>
+
+            <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+              data-name="AddLayer" (click)="drawingCanvas.addLayer()"
+              [ngClass]="{'disabled-element': drawingCanvas.layerStorage.length >= 6 || drawingCanvas.role !== 'master'}">
+              <img src="assets/icon-/Plus.png" class="img25" />
+            </ion-button>
+
+            <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+              data-name="DeleteLayer" (click)="drawingCanvas.deleteLayer()"
+              [ngClass]="{'disabled-element': drawingCanvas.layerStorage.length <= 1 || drawingCanvas.role !== 'master'}">
+              <img src="https://admin.metalearn.vn/images/mobile/notepad/layer/delete.png" class="img25" />
+            </ion-button>
+
+            <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack"
+              *ngFor="let layer of drawingCanvas.layerStorage; let i = index"
+              (click)="drawingCanvas.selectLayer(layer, i)"
+              [ngClass]="{'sunken': drawingCanvas.currentLayer === i + 1}">
+              <img src="https://admin.metalearn.vn/images/mobile/notepad/layer/layer-{{i + 1}}.png" class="img25" />
+            </ion-button>
+          </div>
+
+          <!-- <div (click)="showCreateGame=!showCreateGame"
+            style="display: flex; align-items: center; justify-content: left; margin-left: 50px; margin-top: 10px; width: 15%; ">
+            <img *ngIf="showCreateGame === false" src="assets/icon-/arrowRight.png" class="img25 icon-image "
+              style="margin-right: 10px; color: #999;" />
+            <img *ngIf="showCreateGame === true" src="assets/icon-/arrowDown.png" class="img25 icon-image"
+              style="margin-right: 10px;" />
+            <h2 style="margin: 0; color: #ffff; font-size: 20px;">Quiz</h2>
+          </div> -->
+          <div *ngIf="showCreateGame" style="margin-left: 60px">
+            <!-- <div style="margin-top: 10px;display: flex;" id="quiz-type" #quizTypeSelect(change)="selectOption(quizTypeSelect.id)">
+                <button style="margin-left: 10px; background-color: transparent;" id="quiz-1"
+                  (click)="selectOption('quiz-1')">
+                  <img src="assets/icon-/card-game.png" class="img35" />
+                  <p style="color: white; font-size: 16px; margin: 0;">Ô chữ</p>
+                </button>
+                <button style="margin-left: 10px;background-color: transparent;" id="quiz-2"
+                  (click)="selectOption('quiz-2')">
+                  <img src="assets/icon-/scrabble.png" class="img35" />
+                  <p style="color: white; font-size: 16px; margin: 0;">Điền từ</p>
+                </button>
+                <button style="margin-left: 10px;background-color: transparent;" id="quiz-3"
+                  (click)="selectOption('quiz-3')">
+                  <img src="assets/icon-/jigsaw.png" class="img35" />
+                  <p style="color: white; font-size: 16px; margin: 0;">Ghép đôi</p>
+                </button>
+                <button style="margin-left: 10px;background-color: transparent;" id="quiz-11"
+                  (click)="selectOption('quiz-11')">
+                  <img src="assets/icon-/answer.png" class="img35" />
+                  <p style="color: white; font-size: 16px; margin: 0;">Chọn đáp án</p>
+                </button>
+                <button style="margin-left: 10px;background-color: transparent;" id="quiz-11"
+                  (click)="selectOption('quiz-11')">
+                  <img src="assets/icon-/joystick.png" class="img35" />
+                  <p style="color: white; font-size: 16px; margin: 0;">Game</p>
+                </button>
+            </div> -->
+
+            <!-- <div style="margin-left: 13px; margin-top: 10px;">
+
+              <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="selectAnswerQuiz()">
+                <img src="assets/icon-/000.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="doQuiz()">
+                <img src="assets/icon-/doQuiz.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="checkResult()">
+                <img src="assets/icon-/Check.png" class="img25" />
+              </ion-button>
+
+              <ion-button [class.hide]="!showTextMode2" style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="inputObject()">
+                <img src="assets/icon-/joystick.png" class="img25" />
+              </ion-button>
+
+              hide Match
+              <ion-button [class.hide]="!showTextMode6" style="background-color: #323130; border-color: #323130;"
+                class="cssBtnBack" (click)="addConnection()">
+                <img src="assets/icon-/connectivity.png" class="img25" />
+              </ion-button>
+
+              <div [class.hide]="!showTextMode6">
+              <ion-button [class.hide]="!showTextMode6" style="background-color: #323130; border-color: #323130;"
+                class="custom-file-input tool-btn tool-nosubmenu tooltip-wrap dataNameValue"
+                style="display: inline-block;">
+                <label for="loadImageObject">
+                  <img src="assets/icon-/group.png" class="img25" />
+                </label>
+                <input id="loadImageObject" class="form-control inputfile input-sm" name="input-json" [hidden]="true"
+                  (change)="loadImage($event)" type="file">
+                <span class="hidden tooltip-icon">
+                  <span class="h">Load Image</span>
+                  <span class="t">Load Image file</span>
+                </span>
+              </ion-button>
+              </div>
+            </div> -->
+
+            <!-- <div>
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon/Screenshot11.png" class="img25" />
+                <p class="color-white" style="color: #ffff;">Đỗ chữ</p>
+              </ion-button>
+
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon/Screenshot12.png" class="img25" />
+                <p class="color-white" style="color: #ffff;">Ghép đôi</p>
+              </ion-button>
+
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon/Screenshot13.png" class="img25" />
+                <p class="color-white" style="color: #ffff;">Kết nối</p>
+              </ion-button>
+
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon/Screenshot14.png" class="img25" />
+                <p class="color-white" style="color: #ffff;">Lựa chọn</p>
+              </ion-button>
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon/Screenshot15.png" class="img25" />
+                <p class="color-white" style="color: #ffff;">Điền từ</p>
+              </ion-button>
+            </div> -->
+
+            <!-- <div>
+              <ion-button [class.hide]="!showTextMode2" style="background-color: #323130; border-color: #323130;"
+                class="cssBtnBack" (click)="inputObject()">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Video_game_controller_icon_designed_by_Maico_Amorim.svg/1249px-Video_game_controller_icon_designed_by_Maico_Amorim.svg.png"
+                  class="img25" />
+              </ion-button>
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon-/doQuiz.png" class="img25" />
+                <p class="color-white" style="color: #ffff;">Test</p>
+              </ion-button>
+              <ion-button class="cssBtnBack dataNameValue">
+                <img src="assets/icon/Save.png" class="img25" />
+                <p class="color-white">Save</p>
+              </ion-button>
+            </div> -->
+
+            <div style="margin-left: 13px">
+              <ion-button style="background-color: #323130; border-color: #323130" id="textMode02" data-name="Text"
+                [class.hide]="!showQuiz11">
+                <input id="textInput" placeholder="Nhập text" />
+                <button (click)="addText2($event)" style="padding: 4px 8px; margin-left: 5px; border-radius: 5px">
+                  Add
+                </button>
+              </ion-button>
+
+              <ion-button class="hhh" [class.hide]="!showQuiz11" (click)="toggleShadow()">Add Shadow</ion-button>
+
+              <div style="margin-left: 7px" [class.hide]="!showQuiz11">
+                <input class="editTextMutltiChoose" value="" type="text" id="" placeholder="Nhập text cần sửa"
+                  #InputTextBoxText (change)="changeInputTextBoxText(InputTextBoxText.value)" />
+              </div>
+
+              <div style="display: flex; align-items: center">
+                <ion-button [class.hide]="!showTextMode2" style="background-color: #323130; border-color: #323130"
+                  id="textMode03" data-name="Text" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                  <textarea id="textAreaInputQuiz2" placeholder="Nhập text input" style="height: 70px"></textarea>
+                  <button [class.hide]="!showTextMode2" (click)="addTextAreaInputQuiz2()" class="buttonAddSelect">
+                    Add
+                  </button>
+                </ion-button>
+                <!-- <button [class.hide]="!showTextMode2" class="buttonAddinput" (click)="addTextAreaInputQuiz2()"
+                  >Add</button> -->
+                <ion-button [class.hide]="!showTextMode03" style="background-color: #323130; border-color: #323130"
+                  id="textMode03" data-name="Text" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                  <textarea class="textareaSelect" id="textAreaSelectQuiz" placeholder="Nhập text"
+                    style="height: 70px"></textarea>
+                  <!-- <button (click)="addTextSelectQuiz()">Add</button> -->
+
+                  <button [class.hide]="!showTextMode03" class="buttonAddSelect" (click)="addTextSelectQuiz()">
+                    Add
+                  </button>
+                </ion-button>
+              </div>
+
+              <!-- <ion-button [class.hide]="!showTextMode2" style="background-color: #323130; border-color: #323130;" id="textMode03" data-name="Text" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                      <input id="textAreaSelectQuizRow" placeholder="Row">
+                      <input id="textAreaSelectQuizCol" placeholder="Column">
+                      <button (click)="addTextAreaInputQuiz()">Add input area</button>
+                    </ion-button> -->
+
+              <div class="color-mutilChoose" style="display: flex" [class.hide]="!showTextStyle">
+                <input value="#000000" type="color" id="textBoxFillPicker" #InputTextBoxFill
+                  (change)="changeTextBoxFillColor(InputTextBoxFill.value)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- <div (click)="showObject=!showObject" style="display: flex; align-items: center; justify-content: left; ">
+              <img *ngIf="showObject === false" src="assets/icon/ArrowRight.png" class="img25" style="margin-right: 10px;" />
+              <img *ngIf="showObject === true" src="assets/icon/ArrowDown.png" class="img25" style="margin-right: 10px;" />
+              <h1 style="margin: 0; color: #ffff;">Object</h1>
+          </div> -->
+
+          <!-- <div *ngIf="showObject" style="margin-left: 25px;"> -->
+          <div style="margin-left: 50px; margin-top: 10px">
+            <div>
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                data-name="Triangle" (click)="showLinkVideo=!showLinkVideo">
+                <img src="assets/icon-/linkVideo.png" class="img25" />
+              </ion-button>
+
+              <div *ngIf="showLinkVideo">
+                <div style="display: flex; height: 35px;">
+                  <input style="border-radius: 5px; background-color: white; color: black;" [(ngModel)]="videoLink"
+                    id="link-file" type="text" placeholder="Dán link video vào đây">
+                  <button style="margin-left: 20px; background-color: black; width: 60px; border-radius: 10px;"
+                    (click)="addVideoLink()" id="link-file-open" class="btn btn-success">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div style="margin-top: 5px; border-radius: 2px; width: 50%;" *ngFor="let link of videoLinks">
+                <a style="text-decoration: none; margin-top: 5px;" [href]="link" target="_blank">{{link}}</a>
+              </div> -->
+              <!--
+              <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                data-name="Game" (click)="iconGame('quiz-game')">
+                <img src="assets/animation/game.svg" alt="icon choi game" class="img25" />
+              </ion-button> -->
+
+              <!--Thu Âm -->
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Circle" (click)="iconRecording()">
+                <img
+                  src="https://img.lovepik.com/free-png/20220118/lovepik-microphone-icon-png-image_401486858_wh860.png"
+                  alt="icon thu âm" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Triangle" (click)="iconTriangle()">
+                <img src="assets/icon-/Triangle.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Circle" (click)="iconCircle()">
+                <img src="assets/icon-/Circle.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Rectangle" (click)="iconRoundedRect()">
+                <img src="https://admin.metalearn.vn/images/mobile/normal/rectangle.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Star" (click)="iconStar()">
+                <img src="assets/icon-/Star.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Hexagon" (click)="iconHexagon()">
+                <img src="assets/icon-/Hexagon.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Arrow" (click)="iconArrowTo()">
+                <img src="https://admin.metalearn.vn/images/mobile/normal/chevron.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Heart" (click)="iconHeart()">
+                <img src="assets/icon-/Heart.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Pen" (click)="iconPencil()"
+                [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 1}">
+                <img src="assets/icon-/Pen.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="VLine" (click)="vLinePatternBrush()"
+                [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 2}">
+                <img src="assets/icon-/Pen02.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Curve" (click)="curveDrawinng($event)"
+                [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 10}">
+                <img src="assets/icon-/Arc.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="DashLine" (click)="dashLine($event)"
+                [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 8}">
+                <img src="https://admin.metalearn.vn/images/mobile/notepad/vline.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="ArrowUp" (click)="simpleDrawing($event)"
+                [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 7}">
+                <img src="assets/icon-/Go_Up.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130" class="cssBtnBack dataNameValue"
+                data-name="Dot" (click)="dotDrawing($event)"
+                [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 6}">
+                <img src="https://admin.metalearn.vn/images/mobile/notepad/dotlineGraph.png" class="img25" />
+              </ion-button>
+            </div>
+
+            <!-- Pen -->
+
+            <div style="margin-top: 5px; margin-left: 3px">
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" id="normal-addimage" class="add-image custom-file-input tool-btn tool-nosubmenu tooltip-wrap dataNameValue" style="display: inline-block;" data-name="Image">
+                  <label style="background-color: #323130; border-color: #323130;" for="imageMode">
+                      <img src="assets/icon-/Image.png" class="img25" />
+                  </label>
+                  <input id="imageMode" class="form-control inputfile input-sm" name="input-image" [hidden]="true" (change)="normalAddimage($event)" multiple type="file">
+                  <span class="hidden tooltip-icon">
+                      <span class="h">Image tool</span>
+                      <span class="t">Insert images from the local drive</span>
+                  </span>
+              </ion-button> -->
+
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" id="textMode" (click)="addText()" data-name="Text" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                  <img src="assets/icon-/Text.png" class="img25" />
+                  <span class="hidden tooltip-icon">
+                      <span class="h">Text tool</span>
+                      <span class="t">Create text on the screen</span>
+                  </span>
+              </ion-button> -->
+
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue" data-name="HLine" (click)="hLinePatternBrush()" [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 3}">
+                    <img src="assets/icon-/Run.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue" data-name="Square" (click)="squarePatternBrush()" [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 4}">
+                  <img src="assets/icon-/Stop.png" class="img25" />
+              </ion-button>
+
+              <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue" data-name="Diamond" (click)="diamondPatternBrush()" [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 5}">
+                  <img src="assets/icon-/Diamon.png" class="img25" />
+              </ion-button> -->
+
+              <!-- Create Text Input -->
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" id="textMode02" (click)="addText2()" data-name="Text" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                  <input id="textInput" placeholder="nhập text">
+                  <button>Add</button>
+              </ion-button> -->
+
+              <!-- Create Text Input select quiz -->
+
+              <!-- <ion-button [class.hide]="!showTextMode03" style="background-color: #323130; border-color: #323130;" id="textMode03" (click)="addTextSelectQuiz()" data-name="Text" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                  <textarea id="textAreaSelectQuiz" placeholder="Nhập text"></textarea>
+                  <button>Add</button>
+              </ion-button> -->
+
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" id="createLatex" (click)="addLatex()" data-name="Latex" class="tooltip-wrap tool-btn tool-nosubmenu dataNameValue">
+                  <img src="https://admin.metalearn.vn/images/mobile/notepad/latex.png" class="img25" />
+                  <span class="hidden tooltip-icon">
+                    <span class="h">Load Latex</span>
+                    <span class="t">Load a Latex</span>
+                  </span>
+              </ion-button> -->
+
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" (click)="multipleLine($event)" class="cssBtnBack dataNameValue" data-name="MutipleLine" [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 9}">
+                  <img src="assets/icon-/Lightning.png" class="img25" />
+              </ion-button> -->
+
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="gameQuiz()">
+                  <img src="assets/icon-/Quiz.png" class="img25" />
+              </ion-button> -->
+
+              <!-- <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="doQuiz()">
+                  <img src="assets/icon-/doQuiz.png" class="img25" />
+              </ion-button>
+
+                <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack" (click)="checkResult()">
+                    <img src="assets/icon-/Check.png" class="img25" />
+                </ion-button> -->
+              <div style="display: flex ; align-items: center;">
+                <ion-button style="background-color: #323130; border-color: #323130"
+                  class="custom-file-input tool-btn tool-nosubmenu tooltip-wrap dataNameValue"
+                  style="display: inline-block">
+                  <label for="jsonMode">
+                    <img src="assets/icon-/Image_Upload_File.png" class="img25" />
+                  </label>
+                  <input id="jsonMode" class="form-control inputfile input-sm" name="input-json" [hidden]="true"
+                    (change)="loadJson($event)" type="file" />
+                  <span class="hidden tooltip-icon">
+                    <span class="h">Load JSON</span>
+                    <span class="t">Load a JSON file</span>
+                  </span>
+                </ion-button>
+
+                <!-- <ion-button style="background-color: #323130; border-color: #323130;" class="custom-file-input tool-btn tool-nosubmenu tooltip-wrap dataNameValue" style="display: inline-block;">
+    <label for="backgroundMode">
+        <img src="assets/icon-/back_ground.png" class="img25" />
+    </label>
+    <input id="backgroundMode" class="form-control inputfile input-sm" name="input-json" [hidden]="true" (change)="loadBackGround($event)" type="file">
+  <span class="hidden tooltip-icon">
+      <span class="h">Load Image</span>
+      <span class="t">Load Image file</span>
+  </span>
+</ion-button> -->
+
+                <ion-button style="background-color: #323130; border-color: #323130"
+                  class="cssBtnBack color-input-wrapper">
+                  <input type="color" [(ngModel)]="drawingColor" #colorInput (input)="changeColor2(colorInput.value)" />
+                </ion-button>
+
+                <ion-button style="background-color: #323130; border-color: #323130">
+                  <input type="range" #rangeInput min="0" max="100" value="`${selectedWidth}`" step="1"
+                    (input)="changeValue(rangeInput.value)" />
+                  <div #outputElement class="color-white">{{selectedWidth}}</div>
+                </ion-button>
+
+              </div>
+
+              <div style="margin-left: 20px">
+                <div class="button-container" style="margin-bottom: 10px">
+                  <!-- <button style="background-color: #323130; border-color: #323130;" id="textMode02" data-name="loadJson"
+      (click)="loadJsonApi()" class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+      <img src="assets/icon-/api.png" class="img25" />
+    </button> -->
+                  <button (click)="loadBackGroundDefault(selectedImageOption)" style="
+                      padding: 8px 12px;
+                      background-color: #4caf50;
+                      color: white;
+                      border: none;
+                      cursor: pointer;
+                      margin-right: 10px;
+                    ">
+                    Default BackGround
+                  </button>
+
+                  <select [(ngModel)]="selectedImageOption" (change)="onImageOptionChange()" style="
+                      padding: 2px;
+                      margin-right: 10px;
+                      width: 99px;
+                      height: 32px;
+                    ">
+                    <option *ngFor="let image of imageDefaultService.listLocalImage; let i = index" [value]="i">
+                      {{image.fileName}}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="button-container">
+                  <button style="
+                      background-color: #323130;
+                      border-color: #323130;
+                      margin-right: 10px;
+                    " id="textMode02" data-name="loadJson" (click)="loadImageApi()"
+                    class="add-image tool-btn tool-nosubmenu tooltip-wrap dataNameValue">
+                    <img src="assets/icon-/down.png" class="img25" />
+                  </button>
+
+                  <select [(ngModel)]="selectedJsonOption" (change)="onJsonOptionChange()" style="
+                      padding: 2px;
+                      margin-right: 10px;
+                      border-radius: 5px;
+                      width: 139px;
+                    ">
+                    <option *ngFor="let json of gameJson.listLocalJson; let i = index" [value]="i">
+                      {{ json.fileName }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div>
+                <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                  data-name="Pen" (click)="iconPencil()"
+                  [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 1}">
+                  <img src="assets/icon-/Pen.png" class="img25" />
+                </ion-button>
+
+                <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                  data-name="VLine" (click)="vLinePatternBrush()"
+                  [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 2}">
+                  <img src="assets/icon-/Run.png" class="img25" style="transform: rotate(90deg);" />
+                </ion-button>
+
+                <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                  data-name="HLine" (click)="hLinePatternBrush()"
+                  [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 3}">
+                  <img src="assets/icon-/Run.png" class="img25" />
+                </ion-button>
+
+                <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                  data-name="Square" (click)="squarePatternBrush()"
+                  [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 4}">
+                  <img src="assets/icon-/Stop.png" class="img25" />
+                </ion-button>
+
+                <ion-button style="background-color: #323130; border-color: #323130;" class="cssBtnBack dataNameValue"
+                  data-name="Diamond" (click)="diamondPatternBrush()"
+                  [ngClass]="{'sunken': drawingCanvas?.drawing && selectPen === 5}">
+                  <img src="assets/icon-/Diamon.png" class="img25" />
+                </ion-button>
+              </div> -->
+          </div>
+        </div>
+      </ion-buttons>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal class="custom-modal" #modalAttribution trigger="open-modal" canDismiss="true"
+  [presentingElement]="presentingElement">
+  <ng-template>
+    <ion-content style="background: #323130">
+      <ion-buttons style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          background: #323130;
+          justify-content: flex-end;
+        ">
+        <div style="
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+          ">
+          <ion-button style="background-color: #323130; border-color: #323130" color="white" class="cssBtnBack"
+            (click)="modalAttribution.dismiss()">
+            <i class="fa-solid fa-xmark color-white fs30"></i>
+          </ion-button>
+        </div>
+        <div>
+          <div>
+            <div (click)="showObject=!showObject" style="
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: left;
+              ">
+              <img *ngIf="showObject === false" src="assets/icon-/arrowRight.png" class="img25 icon-image"
+                style="margin-right: 10px" />
+              <img *ngIf="showObject === true" src="assets/icon-/arrowDown.png" class="img25 icon-image"
+                style="margin-right: 10px" />
+              <h1 style="margin: 0; color: white">Setting Attribute</h1>
+            </div>
+            <div>
+              <ul id="sub_menu" style="list-style: none; margin-right: 10px" [class.hide]="!showpopUp">
+                <li>
+                  <div [class.hide]="!showTextStyle" style="
+                      display: flex;
+                      text-align: center;
+                      justify-content: center;
+                      flex-wrap: wrap;
+                    ">
+                    <ion-button class="cssBtnBack" (click)="addConnection('')">
+                      <!-- <i class="fa fa-font" aria-hidden="true" style="color:white"></i> -->
+                      <select [value]="fontFamilyValue" id="font-family" #fontFamily
+                        (change)="selectFontFamilyOption(fontFamily.value)" style="flex: none">
+                        <option value="Arial">Arial</option>
+                        <option value="Arial Black">Arial Black</option>
+                        <option value="Comic Sans MS">Comic Sans MS</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Impact">Impact</option>
+                        <option value="Lucida Console">Lucida Console</option>
+                        <option value="Lucida Sans Unicode">
+                          Lucida Sans Unicode
+                        </option>
+                        <option value="Palatino Linotype">
+                          Palatino Linotype
+                        </option>
+                        <option value="Tahoma">Tahoma</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Trebuchet MS">Trebuchet MS</option>
+                        <option value="Verdana">Verdana</option>
+                      </select>
+                    </ion-button>
+                    <ion-button class="cssBtnBack" (click)="toggleBold()">
+                      <!-- <i class="fa fa-bold" aria-hidden="true" style="color:white"></i> -->
+                      <select [value]="fontSizeValue" id="font-size" #fontSize
+                        (change)="selectFontSizeOption(fontSize.value)">
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                      </select>
+                    </ion-button>
+                    <!-- Trong component.html -->
+                    <!-- Trong component.html -->
+                    <ion-button class="cssBtnBack" (click)="toggleAlign()">
+                      <i *ngIf="alignIcons[0].visible" class="fa {{alignIcons[0].class}}" aria-hidden="true"
+                        style="color: white"></i>
+                      <i *ngIf="alignIcons[2].visible" class="fa {{alignIcons[2].class}}" aria-hidden="true"
+                        style="color: white"></i>
+                      <i *ngIf="alignIcons[1].visible" class="fa {{alignIcons[1].class}}" aria-hidden="true"
+                        style="color: white"></i>
+                    </ion-button>
+
+                    <ion-button class="cssBtnBack" (click)="toggleBold()">
+                      <i class="fa fa-bold" aria-hidden="true" style="color: white"></i>
+                    </ion-button>
+                    <ion-button class="cssBtnBack" (click)="toggleItalic()">
+                      <i class="fa fa-italic" aria-hidden="true" style="color: white"></i>
+                    </ion-button>
+                    <ion-button class="cssBtnBack" (click)="toggleUnderline()">
+                      <i class="fa fa-underline" aria-hidden="true" style="color: white"></i>
+                    </ion-button>
+                    <!-- not done -->
+                    <ion-button class="cssBtnBack" (click)="addConnection('')">
+                      <i class="fa fa-sliders" aria-hidden="true" style="color: white"></i>
+                    </ion-button>
+                    <ion-button class="cssBtnBack" (click)="addConnection('')">
+                      <i class="fa-solid fa-wave-square" style="color: white"></i>
+                    </ion-button>
+                    <!--  -->
+                  </div>
+                </li>
+                <li id="sub-menu-objBlink"></li>
+                <li [class.hide]="!showTextStyle" id="sub-menu-background">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="display: flex; align-items: center; gap: 5px">
+                        <!-- <img src="/assets/icon-/Picture.png" width="20" height="20" style="align-items: center;"> -->
+                        <span style="color: white">Text color</span>
+                      </div>
+                      <input [value]="textColorValue" type="color" id="textBoxColorPicker"
+                        style="display: flex; width: 23%" #TextBoxColor
+                        (change)="changeTextBoxColor(TextBoxColor.value)" />
+                    </div>
+                  </a>
+                </li>
+
+                <li>
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Default Setting</span>
+                      <button id="objObject" type="button" class="btn btn-default" style="
+                          width: 23%;
+                          height: fit-content;
+                          padding: 2px 10px;
+                          border-radius: 0.375rem;
+                        " (click)="defaultSetting()">
+                        {{ "Default" }}
+                        <!-- <div class="shadow"></div> -->
+                      </button>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li [class.hide]="!showBoxStyle">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          gap: 10px;
+                        ">
+                        <span style="color: white">Line style</span>
+                      </div>
+                      <select id="line-style" #lineStyle (change)="selectLineStyleOption(lineStyle.value)"
+                        style="width:23%">
+                        <option value="solid">Solid</option>
+                        <option value="dashed">Dashed</option>
+                        <option value="dotted">Dotted</option>
+                        <option value="double">Double</option>
+                        <option value="groove">Groove</option>
+                        <option value="ridge">Ridge</option>
+                        <option value="inset">Inset</option>
+                        <option value="outset">Outset</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li>
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Blink Object</span>
+                      <button id="objObject" type="button" class="btn btn-default" style="
+                          width: 23%;
+                          height: fit-content;
+                          padding: 2px 10px;
+                          border-radius: 0.375rem;
+                        " (click)="blinkText()">
+                        {{ blinkStatus ? 'On' : 'Off' }}
+                        <!-- <div class="shadow"></div> -->
+                      </button>
+
+                    </div>
+
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-textId">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Object Code</span>
+                      <input id="objectCode" type="text" style="border-radius: 0.375rem; width: 23%" />
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-replaceImg" [class.hide]="!showImageStyle">
+                  <a class="input-container">
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 10px;
+                      ">
+                      <div style="display: flex; align-items: center; gap: 5px">
+                        <span style="color: white">Replace Image</span>
+                      </div>
+                      <ion-button style="background-color: #323130; border-color: #323130"
+                        class="custom-file-input tool-btn tool-nosubmenu tooltip-wrap dataNameValue"
+                        style="display: inline-block">
+                        <label for="backgroundMode">
+                          <img src="assets/icon-/background.png" class="img25" />
+                        </label>
+
+                        <input id="backgroundMode" class="form-control inputfile input-sm" name="input-json"
+                          [hidden]="true" (change)="replaceImage($event)" type="file" />
+                        <span class="hidden tooltip-icon">
+                          <span class="h">Load Image</span>
+                          <span class="t">Load Image file</span>
+                        </span>
+                      </ion-button>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <!-- <li id="sub-menu-textColor">
+                  <a>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="color: white;">Text color</span>
+                      <input id="textColor" type="color" value="#000000" style="border-radius: 0.375rem;">
+                    </div>
+                  </a>
+                </li> -->
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-background" [class.hide]="!showBoxStyle">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="display: flex; align-items: center; gap: 5px">
+                        <!-- <img src="/assets/icon-/Picture.png" width="20" height="20" style="align-items: center;"> -->
+                        <span style="color: white">Border color</span>
+                      </div>
+                      <input [value]="borderColorValue" type="color" id="textBoxColorPicker"
+                        style="display: flex; width:23%" #BorderColor (change)="changeBorderColor(BorderColor.value)" />
+                    </div>
+                  </a>
+                </li>
+
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-borderColor" [class.hide]="!showPenStyle">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        ">
+                        <!-- <img src="/assets/icon-/Pen.png" width="20" height="20" style="align-items: center;"> -->
+                        <span style="color: white">Pen Style</span>
+                      </div>
+                      <select [value]="lineTypeValue" id="pen-style" #penStyle
+                        (change)="selectPenStyleOption(penStyle.value)">
+                        <option value="Pencil">Pencil</option>
+                        <option value="Circle">Vline</option>
+                        <option value="Spray">Curve</option>
+                        <option value="Pattern">Dashline</option>
+                        <option value="Hline">ArrowUp/option></option>
+                        <option value="Vline">Dot</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+                <li [class.hide]="!showPenStyle" id="sub-menu-textColor">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Line color</span>
+                      <input [value]="lineColorValue" type="color" id="FillColorPicker" style="display: flex" #lineColor
+                        (change)="changeLineColor(lineColor.value)" />
+                    </div>
+                  </a>
+                </li>
+                <li [class.hide]="!showPenStyle" id="sub-menu-borderWidth">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        ">
+                        <span style="color: white">Line width</span>
+                      </div>
+                      <select [value]="lineWidthValue" id="border-width" #lineWidth
+                        (change)="selectBorderWidthOption(lineWidth.value)">
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+                <li [class.hide]="!showBoxStyle" id="sub-menu-borderColor">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        ">
+                        <span style="color: white">Textbox border radius</span>
+                      </div>
+                      <select [value]="borderRadiusValue" id="border-radius" #borderRadius
+                        (change)="selectBorderRadiusOption(borderRadius.value)" style="width:23%">
+                        <option value="6">0</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+
+                <li [class.hide]="!showBoxStyle" id="sub-menu-textColor">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Fill color</span>
+                      <input [value]="fillColorValue" type="color" id="FillColorPicker" style="display: flex; width:23%"
+                        #FillColor (change)="changeFillColor(FillColor.value)" />
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+
+                <li [class.hide]="!showBoxStyle" id="sub-menu-borderWidth">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                        ">
+                        <span style="color: white">Border width</span>
+                      </div>
+                      <select [value]="borderWidthValue" id="border-width" #borderWidth
+                        (change)="selectBorderWidthOption(borderWidth.value)" style="width:23%">
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-curve">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Curve</span>
+                      <input id="objCurve" type="number" value="0" min="0"
+                        style="border-radius: 0.375rem; width: 23%" />
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-shadow">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Shadow</span>
+                      <button id="objShadow" type="button" class="btn btn-default" style="
+                          width: 23%;
+                          height: fit-content;
+                          padding: 2px 10px;
+                          border-radius: 0.375rem;
+                        " (click)="toggleShadow()">
+                        {{ shadowStatus ? 'On' : 'Off' }}
+                        <!-- <div class="shadow"></div> -->
+                      </button>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <!-- <li id="sub-menu-fixed" style="display: block">
+                  <a>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="color: white;">Fixed</span>
+                      <button id="objFixed" type="button" class="btn btn-default"
+                        style="width: fit-content; height: fit-content; padding: 2px 10px; border-radius: 0.375rem;">
+                        On
+                      </button>
+                    </div>
+                  </a>
+                </li> -->
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-vessel" style="display: none">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Vessel</span>
+                      <button id="objVessel" type="button" class="btn btn-default" style="
+                          width: fit-content;
+                          height: fit-content;
+                          padding: 2px 10px;
+                          border-radius: 0.375rem;
+                        ">
+                        On
+                      </button>
+                    </div>
+                  </a>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li id="sub-menu-bring">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <span style="color: white">Bring to</span>
+                      <button (click)="toggleBringTo()" id="objBring" type="button" class="btn btn-default" style="
+                          width: 23%;
+                          height: fit-content;
+                          padding: 2px 10px;
+                          border-radius: 0.375rem;
+                        ">
+                        {{ ObjectPosValue === 'back' ? 'Back' : 'Front' }}
+                      </button>
+                    </div>
+                  </a>
+                </li>
+
+                <!-- <hr style="margin: 10px 0;"> -->
+                <!-- <li id="sub-menu-background">
+                  <a>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <div style="display: flex; align-items: center; gap: 5px;">
+                        <img src="/assets/icon-/Picture.png" width="20" height="20" style="align-items: center;">
+                        <span style="color: white;">Background</span>
+                      </div>
+                      <button id="bgToggle" type="button" class="btn btn-default"
+                        style="width: fit-content; height: fit-content; border-radius: 0.375rem;">
+                        On
+                      </button>
+                    </div>
+                  </a>
+                </li> -->
+
+                <li class="icon-layer" [class.hide]="!showObjectQuiz11">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="display: flex; align-items: center; gap: 5px">
+                        <img src="/assets/icon-/Picture.png" width="20" height="20" style="align-items: center" />
+                        <span style="color: white">Answer</span>
+                      </div>
+                      <select [value]="answerMutipleValue" id="answer-value" #AnswerValue
+                        (change)="changeAnswerSelectValue(AnswerValue.value)" style="width: 23%;">
+                        <option>Choose</option>
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+
+                <!-- <li class="icon-layer" [class.hide]="!showObjectQuiz3"> -->
+                <li [class.hide]="!showTextMode6" class="icon-layer">
+                  <a>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <div style="display: flex; align-items: center; gap: 5px">
+                        <img src="/assets/icon-/Picture.png" width="20" height="20" style="align-items: center" />
+                        <span style="color: white">MultipleObject Type</span>
+                      </div>
+                      <select [value]="matchObjectType" id="image-value" #ImageValue
+                        (change)="changeImageSelectValue(ImageValue.value)" style="width : 23%">
+                        <option value="No Choose">No Choose</option>
+                        <option value="Vessel">Vessel</option>
+                        <option value="Answer">Answer</option>
+                      </select>
+                    </div>
+                  </a>
+                </li>
+
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li>
+                  <div class="object-select" style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 4px 10px 6px;
+                      margin-left: 13px;
+                    ">
+                    <span style="color: white">Object Select</span>
+                    <div style="
+                        width: 20%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <input id="objSelect" type="checkbox" style="margin: 0" />
+                      <span id="objSelectDropDown"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                  <ul id="objSelectList" style="display: none; border-top: 1px solid #999">
+                    <li>
+                      <a>
+                        <span>Status</span>
+                        <button id="toggleObjStatus" type="button" class="btn btn-danger" style="
+                            width: fit-content;
+                            height: fit-content;
+                            padding: 0 8px;
+                          ">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span>Color Selected</span>
+                        <input id="colorSelected" type="color" value="white" />
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span>Color Unselected</span>
+                        <input id="colorUnselected" type="color" value="white" />
+                      </a>
+                    </li>
+                    <li>
+                      <a class="input-container">
+                        <span>Sound Selected</span>
+                        <input id="soundSelected" type="file" accept="audio/*" />
+                        <label for="soundSelected" style="color: #aaa; margin: 0">selected.mp3</label>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="input-container">
+                        <span>Sound Unselected</span>
+                        <input id="soundUnselected" type="file" accept="audio/*" />
+                        <label for="soundUnselected" style="color: #aaa; margin: 0">unselected.mp3</label>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li>
+                  <div style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 4px 10px 6px;
+                      margin-left: 13px;
+                    ">
+                    <span style="color: white">Object Input</span>
+                    <div style="
+                        width: 20%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <input id="objInput" type="checkbox" style="margin: 0" />
+                      <span id="objInputDropDown"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                  <ul id="objInputList" style="display: none; border-top: 1px solid #999">
+                    <li>
+                      <a class="input-container">
+                        <span>Sound Typing</span>
+                        <input id="soundTyping" type="file" accept="audio/*" />
+                        <label for="soundTyping" style="color: #aaa; margin: 0">
+                          typing.mp3
+                        </label>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li>
+                  <div style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 4px 10px 6px;
+                      margin-left: 13px;
+                    ">
+                    <span style="color: white">Object Snap</span>
+                    <div style="
+                        width: 20%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <input id="objSnap" type="checkbox" style="margin: 0" />
+                      <span id="objSnapDropDown"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                  <ul id="objSnapList" style="display: none; border-top: 1px solid #999">
+                    <li>
+                      <a class="input-container">
+                        <span style="color: white">Sound Snap</span>
+                        <input id="soundSnap" type="file" accept="audio/*" />
+                        <label for="soundSnap" style="color: #aaa; margin: 0">
+                          snap.mp3
+                        </label>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!-- <hr style="margin: 10px 0;"> -->
+                <li>
+                  <div style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 4px 10px 6px;
+                      margin-left: 13px;
+                    ">
+                    <span style="color: white">Object Control</span>
+                    <div style="
+                        width: 20%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                      ">
+                      <input id="objControl" type="checkbox" style="margin: 0" />
+                      <span id="objControlDropDown"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </ion-buttons>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<create-flashcard-modal #createFlashcardModal [drawingCanvas]="drawingCanvas" />
+<generate-flashcard-modal #generateFlashcardModal [drawingCanvas]="drawingCanvas" />

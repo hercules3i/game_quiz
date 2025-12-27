@@ -1,0 +1,33 @@
+﻿.box {
+    border: 1px solid #88A4CF;
+    background-color: #E0EAF8;
+    margin-top: 100px;
+}
+
+#log {
+    margin-bottom: 15%;
+    width: 100%;
+}
+
+#text {
+    width: 91.4%;
+    padding: 5px;
+    height: 25px;
+}
+
+span.me {
+    font-weight: bold;
+}
+
+#send {
+    padding: 0 8px;
+}
+
+.input-form {
+    padding: 10px;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}

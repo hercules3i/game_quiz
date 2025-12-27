@@ -1,0 +1,73 @@
+.custom-modal {
+  --height: 90%;
+  // --border-radius: 24px 24px 0 0;
+}
+.custom-modal::part(content) {
+  position: fixed;
+  bottom: 0;
+}
+.info-students {
+  display: flex;
+  border-bottom: 1px dashed;
+  margin: 10px 5px 0px 10px;
+  padding: 3px 3px 5px 5px;
+  justify-content: space-between;
+}
+.icon-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  align-content: start;
+  margin-right: 5px;
+}
+
+.flex-end {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  align-content: start;
+  width: 100%;
+  margin-right: 5px;
+}
+.info span {
+  text-align: left;
+  font-weight: 100;
+  font-size: 85%;
+  margin: 0px 10px 10px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+.info {
+  flex: 1;
+  margin-left: 2%;
+}
+.info-students i {
+  font-size: 100%;
+}
+
+.fa-plus-large {
+  margin: 10px 4px 5px 5px;
+  font-size: 135%;
+}
+.fa-dash {
+  margin: 10px 4px 5px 5px;
+  font-size: 135%;
+}
+.font-size a {
+  font-size: 100%;
+  font-weight: 600;
+  margin: 0px 10px 5px 10px;
+}
+.w3-circle {
+  height: 85px;
+  width: 85px;
+}
+.w3-circle img {
+  height: 100%;
+  width: 100%;
+}
+.font-size {
+  display: flex;
+  flex-direction: column;
+}

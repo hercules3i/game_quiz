@@ -1,0 +1,10 @@
+blood-sheet0.png 1024*512
+bomb-sheet0.png 512*256
+bombexplosion-sheet0.png 2048*579
+booom0-sheet0.png 2048*618
+bulletimpact-sheet0.png 2048*642
+fire-sheet0.png 128*66
+fire-sheet0-1.png 1880*262
+explosion-sheet0.png 512*128
+explosion_tank_scene-sheet0.png 512*162
+explosion_brick-sheet0.png 114*36
